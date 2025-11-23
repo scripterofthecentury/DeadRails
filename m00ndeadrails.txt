@@ -1,0 +1,224 @@
+-LEAKED BY VORTX HUB ENGINE V2
+-- JOIN OUR DISCORD https://discord.gg/jxJ8HNQKjH
+pcall(function()
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "DeadRailsLoader"
+gui.ResetOnSpawn = false
+
+-- Main Frame
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 360, 0, 300)
+frame.Position = UDim2.new(0.5, -180, 0.5, -180)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.Active = true
+frame.Draggable = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+local gradient = Instance.new("UIGradient", frame)
+gradient.Color = ColorSequence.new{
+ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 60)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 80, 90))
+}
+gradient.Rotation = 45
+
+local shadow = Instance.new("UIStroke", frame)
+shadow.Thickness = 2
+shadow.Color = Color3.fromRGB(255, 255, 255)
+shadow.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+-- Title
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = "dead rails"
+title.Font = Enum.Font.GothamBlack
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 26
+
+-- Tab Buttons
+local function createTabButton(name, posX)
+local btn = Instance.new("TextButton", frame) --LEAKED BY VORTX HUB ENGINE V2
+btn.Position = UDim2.new(0, posX, 0, 45)
+btn.Size = UDim2.new(0, 110, 0, 30)
+btn.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
+btn.Text = name
+btn.Font = Enum.Font.GothamMedium
+btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+btn.TextSize = 16
+btn.TextWrapped = true
+Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+return btn
+end
+
+local homeTab = createTabButton("Home", 10)
+local teleportTab = createTabButton("Teleports", 125)
+local othersTab = createTabButton("Others", 240)
+
+-- Tab Containers
+local function createContainer()
+local container = Instance.new("ScrollingFrame", frame)
+container.Position = UDim2.new(0, 0, 0, 80)
+container.Size = UDim2.new(1, 0, 1, -120)
+container.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+container.CanvasSize = UDim2.new(0, 0, 2, 0)
+container.Visible = false
+container.ScrollBarThickness = 6
+return container
+end
+
+local homeContainer = createContainer()
+local teleportContainer = createContainer()
+local othersContainer = createContainer()
+homeContainer.Visible = true
+
+-- Tab Switching
+local currentTab = homeContainer
+local function switchTab(newTab)
+currentTab.Visible = false
+newTab.Visible = true
+currentTab = newTab
+end
+
+homeTab.MouseButton1Click:Connect(function() switchTab(homeContainer) end)
+teleportTab.MouseButton1Click:Connect(function() switchTab(teleportContainer) end)
+othersTab.MouseButton1Click:Connect(function() switchTab(othersContainer) end)
+
+-- Sound
+local sound = Instance.new("Sound", gui)
+sound.SoundId = "rbxassetid://6026984224"
+sound.Volume = 1
+
+-- Reusable Button
+local function createButton(parent, text, color, y, url)
+local btn = Instance.new("TextButton", parent)
+btn.Position = UDim2.new(0.5, -100, 0, y)
+btn.Size = UDim2.new(0, 200, 0, 35)
+btn.BackgroundColor3 = color
+btn.Text = text
+btn.Font = Enum.Font.GothamSemibold
+btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+btn.TextSize = 16
+Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+btn.MouseButton1Click:Connect(function()
+sound:Play()
+if url then
+loadstring(game:HttpGet(url))()
+end
+end)
+return btn
+end
+
+-- Home Content
+local homeY = 10
+createButton(homeContainer, "Welcome to Dead Rails GUI", Color3.fromRGB(40, 40, 80), homeY, nil)
+
+-- Add your custom button BELOW the welcome one
+homeY += 45
+createButton(homeContainer, "Click for tutorial (YT)", Color3.fromRGB(100, 60, 100), homeY, nil).MouseButton1Click:Connect(function()
+setclipboard("https://youtube.com/@moondiety_script?si=Qa7GHEWVUqbYa2lx")
+sound:Play()
+game.StarterGui:SetCore("SendNotification", {
+Title = "Link Copied";
+Text = "Paste in browser to open YouTube.";
+Duration = 5;
+})
+end)
+
+homeY += 45
+createButton(homeContainer, "Join Discord", Color3.fromRGB(100, 60, 100), homeY, nil).MouseButton1Click:Connect(function()
+setclipboard("https://discord.gg/3aru6qvX")
+sound:Play()
+game.StarterGui:SetCore("SendNotification", {
+Title = "Link Copied";
+Text = "Paste in browser to open Discord.";
+Duration = 5;
+})
+end)
+
+-- Teleport Buttons
+local y = 10
+y += 45; createButton(teleportContainer, "Fort Constitution", Color3.fromRGB(60, 60, 90), y, "https://raw.githubusercontent.com/ringtaa/Tpfort.github.io/refs/heads/main/Tpfort.lua")
+y += 45; createButton(teleportContainer, "Vampire Castle", Color3.fromRGB(90, 60, 60), y, "https://raw.githubusercontent.com/ringtaa/castletpfast.github.io/refs/heads/main/FASTCASTLE.lua")
+y += 45; createButton(teleportContainer, "Tesla Lab", Color3.fromRGB(70, 70, 100), y, "https://raw.githubusercontent.com/ringtaa/tptotesla.github.io/refs/heads/main/Tptotesla.lua")
+y += 45; createButton(teleportContainer, "Train", Color3.fromRGB(80, 60, 100), y, "https://raw.githubusercontent.com/ringtaa/train.github.io/refs/heads/main/train.lua")
+
+-- Others Tab Buttons
+local z = 10
+z += 45; createButton(othersContainer, "TP to End (Saned)", Color3.fromRGB(100, 80, 60), z, "https://raw.githubusercontent.com/TwoGunVolley/Earlyfixed/refs/heads/main/Protected_1408189441085576.txt")
+z += 45; createButton(othersContainer, "TP to End (Tora)", Color3.fromRGB(60, 90, 90), z, "https://raw.githubusercontent.com/gumanba/Scripts/refs/heads/main/DeadRails")
+z += 45; createButton(othersContainer, "TP to Sterling Town", Color3.fromRGB(80, 70, 100), z, "https://raw.githubusercontent.com/ringtaa/sterlingnotifcation.github.io/refs/heads/main/Sterling.lua")
+
+-- Countdown
+local timerLabel = Instance.new("TextLabel", gui)
+timerLabel.Position = UDim2.new(0, 10, 0, 75)
+timerLabel.Size = UDim2.new(0, 60, 0, 20)
+timerLabel.BackgroundTransparency = 1
+timerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+timerLabel.Font = Enum.Font.Gotham
+timerLabel.TextSize = 25
+timerLabel.Text = "10:00"
+
+local totalSeconds = 600
+task.spawn(function()
+while totalSeconds > 0 do
+totalSeconds -= 1
+local minutes = math.floor(totalSeconds / 60)
+local seconds = totalSeconds % 60
+timerLabel.Text = string.format("%02d:%02d", minutes, seconds)
+wait(1)
+end
+timerLabel.Text = "00:00"
+end)
+
+-- Minimize & Toggle
+local minimize = Instance.new("TextButton", frame)
+minimize.Position = UDim2.new(0.5, -60, 1, -50)
+minimize.Size = UDim2.new(0, 120, 0, 35)
+minimize.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+minimize.Text = "Minimize"
+minimize.Font = Enum.Font.GothamMedium
+minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimize.TextSize = 18
+Instance.new("UICorner", minimize).CornerRadius = UDim.new(0, 8)
+
+local toggleButton = Instance.new("TextButton", gui)
+toggleButton.Size = UDim2.new(0, 60, 0, 60)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+toggleButton.Text = "MOON"
+toggleButton.Font = Enum.Font.GothamBlack
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.TextSize = 22
+toggleButton.Visible = false
+Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
+
+minimize.MouseButton1Click:Connect(function()
+frame.Visible = false
+toggleButton.Visible = true
+sound:Play()
+end)
+
+toggleButton.MouseButton1Click:Connect(function()
+frame.Visible = true
+toggleButton.Visible = false
+sound:Play()
+end)
+
+-- Footer
+local footer = Instance.new("TextLabel", frame)
+footer.Position = UDim2.new(0, 0, 1, -20)
+footer.Size = UDim2.new(1, 0, 0, 20)
+footer.BackgroundTransparency = 1
+footer.Text = "— created by Moondiety —"
+footer.Font = Enum.Font.GothamBold
+footer.TextColor3 = Color3.fromRGB(255, 160, 255)
+footer.TextStrokeTransparency = 0
+footer.TextStrokeColor3 = Color3.fromRGB(60, 0, 90)
+footer.TextSize = 16
+
+end)
+
+-removed content-

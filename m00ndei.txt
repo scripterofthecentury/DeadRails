@@ -1,0 +1,141 @@
+-LEAKED BY VORTX HUB ENGINE V2
+-- JOIN OUR DISCORD https://discord.gg/jxJ8HNQKjH
+
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ShootRemote  = ReplicatedStorage.Remotes.Weapon.Shoot
+local ReloadRemote = ReplicatedStorage.Remotes.Weapon.Reload
+
+local Players = game:GetService("Players")
+local workspace = game.Workspace
+local Camera = workspace.CurrentCamera
+
+-- Configuration
+local AutoHeadshotEnabled = true    
+local AutoReloadEnabled   = true   
+local GunAuraAllMobs      = true    
+
+local SEARCH_RADIUS       = 200     
+local HEADSHOT_DELAY      = 0.06 
+
+local SupportedWeapons = {
+    "Revolver",
+    "Rifle",
+    "Sawed-Off Shotgun",
+    "Shotgun"
+}
+local function isPlayerModel(m)
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p.Character == m then
+            return true
+        end
+    end
+    return false
+end
+
+local function getEquippedSupportedWeapon()
+    local char = Players.LocalPlayer and Players.LocalPlayer.Character
+    if not char then return nil end
+    for _, name in ipairs(SupportedWeapons) do
+        local tool = char:FindFirstChild(name)
+        if tool then
+            return tool
+        end
+    end
+    return nil
+end
+
+local function findAllNPCsInRange()
+    local npcs = {}
+    for _, obj in ipairs(workspace:GetDescendants()) do
+        if obj:IsA("Model") and not isPlayerModel(obj) then
+            local hum = obj:FindFirstChildOfClass("Humanoid")
+            local head = obj:FindFirstChild("Head")
+            if hum and head and hum.Health > 0 then
+                local dist = (head.Position - Camera.CFrame.Position).Magnitude
+                if dist <= SEARCH_RADIUS then
+                    table.insert(npcs, {model = obj, hum = hum, head = head})
+                end
+            end
+        end
+    end
+    return npcs
+end
+local function findClosestCategories()
+    local bestModel, bestHumanoid, bestHead
+    local minDist = SEARCH_RADIUS
+    for model, data in pairs(ESPObjects or {}) do
+        local cat = data.category
+        if cat == "Zombies" or cat == "NightEnemies" or cat == "Cowboys" then
+            local hum = model:FindFirstChildOfClass("Humanoid")
+            local head = model:FindFirstChild("Head")
+            if hum and head and hum.Health > 0 then
+                local dist = (head.Position - Camera.CFrame.Position).Magnitude
+                if dist < minDist then
+                    minDist = dist
+                    bestModel = model
+                    bestHumanoid = hum
+                    bestHead = head
+                end
+            end
+        end
+    end
+    return bestModel, bestHumanoid, bestHead
+end
+local function autoHeadshotLoop()
+    while AutoHeadshotEnabled do
+        local tool = getEquippedSupportedWeapon()
+        if tool then
+            if GunAuraAllMobs then
+                local npcs = findAllNPCsInRange()
+                for _, npc in ipairs(npcs) do
+                    local pelletTable = {}
+                    if tool.Name == "Shotgun" or tool.Name == "Sawed-Off Shotgun" then
+                        for i = 1, 6 do
+                            pelletTable[tostring(i)] = npc.hum
+                        end
+                    else
+                        pelletTable["1"] = npc.hum
+                    end
+                    local shootArgs = {
+                        workspace:GetServerTimeNow(),
+                        tool,
+                        CFrame.new(Camera.CFrame.Position, npc.head.Position),
+                        pelletTable
+                    }
+                    ShootRemote:FireServer(unpack(shootArgs))
+                    if AutoReloadEnabled then
+                        task.wait(0.1)
+                        ReloadRemote:FireServer(workspace:GetServerTimeNow(), tool)
+                    end
+                end
+            else
+                local model, hum, head = findClosestCategories()
+                if model and hum and head then
+                    local pelletTable = {}
+                    if tool.Name == "Shotgun" or tool.Name == "Sawed-Off Shotgun" then
+                        for i = 1, 6 do
+                            pelletTable[tostring(i)] = hum
+                        end
+                    else
+                        pelletTable["1"] = hum
+                    end
+                    local shootArgs = {
+                        workspace:GetServerTimeNow(),
+                        tool,
+                        CFrame.new(Camera.CFrame.Position, head.Position),
+                        pelletTable
+                    }
+                    ShootRemote:FireServer(unpack(shootArgs))
+                    if AutoReloadEnabled then
+                        task.wait(0.1)
+                        ReloadRemote:FireServer(workspace:GetServerTimeNow(), tool)
+                    end
+                end
+            end
+        end
+        task.wait(HEADSHOT_DELAY)
+    end
+end
+task.spawn(autoHeadshotLoop) -LEAKED BY VORTX HUB ENGINE V2
+-- JOIN OUR DISCORD https://discord.gg/jxJ8HNQKjH
